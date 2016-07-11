@@ -7,3 +7,5 @@
 /Task1/SimpleNumbersIterator.Tests/obj/Debug
 /Task1/SimpleNumbersIterator/obj/Debug
 /Task1/Task1.sln
+*.StyleCop
+*.Cache

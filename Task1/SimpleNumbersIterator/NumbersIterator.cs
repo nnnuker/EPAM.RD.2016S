@@ -28,6 +28,7 @@ namespace SimpleNumbersIterator
                     return false;
                 }
             }
+
             return true;
         }
     }
