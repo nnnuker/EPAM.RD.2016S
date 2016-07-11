@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Task1/SimpleNumbersIterator/bin/Debug
+/Task1/SimpleNumbersIterator.Tests/bin/Debug
+/Task1/SimpleNumbersIterator.Tests/obj/Debug
+/Task1/SimpleNumbersIterator/obj/Debug
+/Task1/Task1.sln
