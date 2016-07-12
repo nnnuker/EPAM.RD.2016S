@@ -9,3 +9,11 @@
 /Task1/Task1.sln
 *.StyleCop
 *.Cache
+*.dll
+*.pdb
+*.txt
+/Day1/UserStorage/obj/Debug
+*.csproj
+/Day1/UserStorage.Tests/obj/Debug
+*.sln
+*.suo
