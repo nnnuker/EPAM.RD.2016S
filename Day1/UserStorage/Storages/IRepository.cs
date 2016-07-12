@@ -9,6 +9,8 @@ namespace UserStorage.Storages
 {
     public interface IRepository
     {
-        void Save(IEntity user);
+        void Add(IEntity user);
+        IEntity Get(Predicate<IEntity> predicate);
+        void Delete(int userId);
     }
 }

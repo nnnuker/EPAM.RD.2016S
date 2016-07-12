@@ -16,10 +16,24 @@ namespace UserStorage.Storages
             users = new List<IEntity>();
         }
 
-        public void Save(IEntity user)
+        public void Add(IEntity user)
         {
             if (user != null)
                 users.Add(user);
+        }
+
+        public IEntity Get(Predicate<IEntity> predicate)
+        {
+            return users.Find(predicate);
+        }
+
+        public void Delete(int userId)
+        {
+            var findResult = users.Find(user => user.Id == userId);
+            if (findResult != null)
+            {
+                users.Remove(findResult);
+            }
         }
     }
 }
