@@ -7,6 +7,7 @@ using UserStorage.Infrastructure;
 
 namespace UserStorage.Entities
 {
+    [Serializable]
     public class User : IEntity, IEquatable<User>
     {
         #region Properties
@@ -33,7 +34,7 @@ namespace UserStorage.Entities
                 return false;
             }
 
-            return this.FirstName == other.FirstName && this.LastName == other.LastName;
+            return FirstName == other.FirstName && LastName == other.LastName;
         }
 
         public override bool Equals(object obj)
