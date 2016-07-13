@@ -7,22 +7,22 @@ using UserStorage.Entities;
 
 namespace UserStorage.Storages
 {
-    public class MemoryRepository : IRepository
+    public class MemoryRepository : IRepository<User>
     {
-        private List<IEntity> users;
+        private List<User> users;
 
         public MemoryRepository()
         {
-            users = new List<IEntity>();
+            users = new List<User>();
         }
 
-        public void Add(IEntity user)
+        public void Add(User user)
         {
             if (user != null)
                 users.Add(user);
         }
 
-        public IEntity Get(Predicate<IEntity> predicate)
+        public User Get(Predicate<User> predicate)
         {
             return users.Find(predicate);
         }

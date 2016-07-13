@@ -9,13 +9,13 @@ using UserStorage.Storages;
 
 namespace UserStorage.Services
 {
-    public class Storage : IStorage
+    public class Storage : IStorage<User>
     {
-        private IRepository repository;
+        private IRepository<User> repository;
         private IValidator<User> validator;
         private IGenerator generator;
 
-        public Storage(IRepository repository, IValidator<User> validator, IGenerator generator)
+        public Storage(IRepository<User> repository, IValidator<User> validator, IGenerator generator)
         {
             if (repository == null)
                 throw new ArgumentNullException(nameof(repository));
@@ -29,7 +29,7 @@ namespace UserStorage.Services
             this.generator = generator;
         }
 
-        public int Add(IEntity user)
+        public int Add(User user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
@@ -52,7 +52,8 @@ namespace UserStorage.Services
 
         public void Delete(int userId)
         {
-            repository.Delete(userId);
+            if (userId > 0)
+                repository.Delete(userId);
         }
 
         public void Delete(User user)
@@ -65,7 +66,12 @@ namespace UserStorage.Services
 
         public int Search(Predicate<User> predicate)
         {
-            repository.Get(predicate);
+            var result = repository.Get(predicate);
+
+            if (result == null)
+                return 0;
+
+            return result.Id;
         }
     }
 }

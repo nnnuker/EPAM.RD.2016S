@@ -7,10 +7,10 @@ using UserStorage.Entities;
 
 namespace UserStorage.Storages
 {
-    public interface IRepository
+    public interface IRepository<T> where T : IEntity
     {
-        void Add(IEntity user);
-        IEntity Get(Predicate<IEntity> predicate);
-        void Delete(int userId);
+        void Add(T entity);
+        T Get(Predicate<T> predicate);
+        void Delete(int entityId);
     }
 }

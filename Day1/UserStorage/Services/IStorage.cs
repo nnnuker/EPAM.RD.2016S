@@ -7,11 +7,11 @@ using UserStorage.Entities;
 
 namespace UserStorage.Services
 {
-    public interface IStorage
+    public interface IStorage<T> where T : IEntity
     {
-        int Add(User user);
-        int Search(Predicate<User> predicate);
-        void Delete(User user);
-        void Delete(int userId);
+        int Add(T entity);
+        int Search(Predicate<T> predicate);
+        void Delete(T entity);
+        void Delete(int entityId);
     }
 }
