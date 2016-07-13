@@ -37,12 +37,11 @@ namespace UserStorage.Services
             if (!validator.IsValid(user))
                 throw new ArgumentException(nameof(user));
 
-            user.Id = generator.GetId();
-
             var findResult = repository.Get(u => u.Equals(user));
 
             if (findResult == null)
             {
+                user.Id = generator.GetId();
                 repository.Add(user);
                 return user.Id;
             }
@@ -52,8 +51,10 @@ namespace UserStorage.Services
 
         public void Delete(int userId)
         {
-            if (userId > 0)
-                repository.Delete(userId);
+            if (userId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
+            repository.Delete(userId);
         }
 
         public void Delete(User user)
