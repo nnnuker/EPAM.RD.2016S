@@ -10,8 +10,11 @@ namespace UserStorage.Services
     public interface IStorage<T> where T : IEntity
     {
         int Add(T entity);
+
         int Search(Predicate<T> predicate);
+
         void Delete(T entity);
+
         void Delete(int entityId);
     }
 }

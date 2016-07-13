@@ -10,7 +10,9 @@ namespace UserStorage.Storages
     public interface IRepository<T> where T : IEntity
     {
         void Add(T entity);
+
         T Get(Predicate<T> predicate);
+
         void Delete(int entityId);
     }
 }

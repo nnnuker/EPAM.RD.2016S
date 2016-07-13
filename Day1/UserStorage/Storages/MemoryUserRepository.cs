@@ -24,7 +24,7 @@ namespace UserStorage.Storages
 
         public User Get(Predicate<User> predicate)
         {
-            if(predicate == null)
+            if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
             return users.Find(predicate);

@@ -9,7 +9,9 @@ namespace UserStorage.Entities
     public struct VisaRecord
     {
         public string Country { get; set; }
+
         public DateTime Start { get; set; }
+
         public DateTime End { get; set; }
 
         public override int GetHashCode()

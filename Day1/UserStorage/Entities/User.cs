@@ -11,11 +11,17 @@ namespace UserStorage.Entities
     {
         #region Properties
         public int Id { get; set; }
+
         public string PersonalId { get; set; }
+
         public string FirstName { get; set; }
+
         public string LastName { get; set; }
+
         public DateTime DateOfBirth { get; set; }
+
         public GenderEnum Gender { get; set; }
+
         public VisaRecord Visa { get; set; }
         #endregion
 
@@ -27,7 +33,7 @@ namespace UserStorage.Entities
                 return false;
             }
 
-            return FirstName == other.FirstName && LastName == other.LastName;
+            return this.FirstName == other.FirstName && this.LastName == other.LastName;
         }
 
         public override bool Equals(object obj)
@@ -58,9 +64,8 @@ namespace UserStorage.Entities
         private int CheckOnNull(object obj)
         {
             if (obj == null)
-            {
                 return 0;
-            }
+
             return obj.GetHashCode();
         }
         #endregion
