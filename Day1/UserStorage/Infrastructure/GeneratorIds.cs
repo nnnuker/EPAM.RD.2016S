@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleNumbersIterator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,21 @@ namespace UserStorage.Infrastructure
 {
     public class GeneratorIds : IGenerator
     {
+        private IEnumerator<int> enumerator;
+
+        public GeneratorIds()
+        {
+            enumerator = NumbersIterator.GetEnumerator();
+        }
+
         public int GetId()
         {
-            throw new NotImplementedException();
+            if (enumerator.MoveNext())
+            {
+                return enumerator.Current;
+            }
+
+            throw new InvalidOperationException();
         }
     }
 }
