@@ -11,7 +11,14 @@ namespace UserStorage.Infrastructure
     {
         public bool IsValid(User user)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName)
+                || string.IsNullOrEmpty(user.PersonalId) || string.IsNullOrEmpty(user.Visa.Country)
+                || user.DateOfBirth > DateTime.Now || !Enum.IsDefined(typeof(GenderEnum), user.Gender))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
