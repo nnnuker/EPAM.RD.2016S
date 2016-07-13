@@ -16,7 +16,7 @@ namespace UserStorage.Infrastructure
             enumerator = NumbersIterator.GetEnumerator();
         }
 
-        public int GetId()
+        public int Get()
         {
             if (enumerator.MoveNext())
             {

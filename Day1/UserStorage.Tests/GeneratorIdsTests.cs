@@ -11,7 +11,7 @@ namespace UserStorage.Tests
         public void GetId_TryGetFirstId_ReturnOne()
         {
             IGenerator generator = new GeneratorIds();
-            var result = generator.GetId();
+            var result = generator.Get();
 
             Assert.AreEqual(1, result);
         }

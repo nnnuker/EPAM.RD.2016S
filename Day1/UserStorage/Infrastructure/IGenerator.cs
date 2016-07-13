@@ -8,6 +8,6 @@ namespace UserStorage.Infrastructure
 {
     public interface IGenerator
     {
-        int GetId();
+        int Get();
     }
 }

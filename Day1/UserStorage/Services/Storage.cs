@@ -41,7 +41,7 @@ namespace UserStorage.Services
 
             if (findResult == null)
             {
-                user.Id = generator.GetId();
+                user.Id = generator.Get();
                 repository.Add(user);
                 return user.Id;
             }
