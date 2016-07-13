@@ -7,11 +7,11 @@ using UserStorage.Entities;
 
 namespace UserStorage.Storages
 {
-    public class MemoryRepository : IRepository<User>
+    public class MemoryUserRepository : IRepository<User>
     {
         private List<User> users;
 
-        public MemoryRepository()
+        public MemoryUserRepository()
         {
             users = new List<User>();
         }
@@ -24,11 +24,17 @@ namespace UserStorage.Storages
 
         public User Get(Predicate<User> predicate)
         {
+            if(predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
             return users.Find(predicate);
         }
 
         public void Delete(int userId)
         {
+            if (userId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
             var findResult = users.Find(user => user.Id == userId);
             if (findResult != null)
             {
