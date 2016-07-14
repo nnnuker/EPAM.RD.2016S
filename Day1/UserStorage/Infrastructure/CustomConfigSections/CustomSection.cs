@@ -11,11 +11,13 @@ namespace UserStorage.Infrastructure.CustomConfigSections
     {
         private CustomSection() { }
 
-        [ConfigurationProperty("Path", DefaultValue = @"|DataDirectory|\database.xml")]
+        [ConfigurationProperty("path", IsRequired = true)]
         public string Path
         {
-            get { return (string)this["Path"]; }
-            set { this["Path"] = value; }
+            get
+            {
+                return this["path"] as string;
+            }
         }
     }
 }

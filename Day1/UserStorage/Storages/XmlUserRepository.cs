@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 using UserStorage.Entities;
 using UserStorage.Infrastructure.CustomConfigSections;
@@ -48,14 +49,17 @@ namespace UserStorage.Storages
             if (findResult != null)
             {
                 users.Remove(findResult);
+                DeleteUser();
             }
         }
 
         private string GetFilePath()
         {
-            Configuration config =
-    ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            CustomSection section = (CustomSection)config.Sections["CustomSection"];
+            CustomSection section = ConfigurationManager.GetSection("CustomSection") as CustomSection;
+            if (section == null)
+            {
+                throw new ConfigurationErrorsException("Custom section not found");
+            }
             return section.Path;
         }
 
@@ -65,17 +69,35 @@ namespace UserStorage.Storages
 
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                return (List<User>)formatter.Deserialize(fs);
+                using (XmlTextReader reader = new XmlTextReader(fs))
+                {
+                    //if (formatter.CanDeserialize(reader))
+                    //{
+                    //    return formatter.Deserialize(fs) as List<User>;
+                    //}
+
+                    return new List<User>();
+                }
             }
         }
 
         private void SaveUser(User user)
         {
-            XmlSerializer formatter = new XmlSerializer(typeof(User));
+            XmlSerializer formatter = new XmlSerializer(typeof(User), new XmlRootAttribute("Users"));
 
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
                 formatter.Serialize(fs, user);
+            }
+        }
+
+        private void DeleteUser()
+        {
+            XmlSerializer formatter = new XmlSerializer(typeof(List<User>));
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                formatter.Serialize(fs, users);
             }
         }
     }
