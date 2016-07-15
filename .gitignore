@@ -15,3 +15,6 @@
 *.csproj
 /Day1/UserStorage.Tests/obj/Debug
 *.suo
+/Day1/UserStorage.Factory/obj/Debug
+/Day1/UserStorage.Factory.Tests/bin/Debug
+/Day1/UserStorage.Factory.Tests/obj/Debug

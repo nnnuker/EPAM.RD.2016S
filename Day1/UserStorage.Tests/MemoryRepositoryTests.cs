@@ -25,7 +25,7 @@ namespace UserStorage.Tests
 
             var result = repository.Get(user=>user.Id==0);
 
-            Assert.AreEqual(0, result.Length);
+            Assert.AreEqual(0, result.Count());
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace UserStorage.Tests
 
             repository.Delete(10);
 
-            Assert.AreEqual(0, repository.Get(u => u.Id == 10).Length);
+            Assert.AreEqual(0, repository.Get(u => u.Id == 10).Count());
         }
     }
 }
