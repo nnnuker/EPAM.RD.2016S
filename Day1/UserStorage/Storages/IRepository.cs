@@ -11,7 +11,7 @@ namespace UserStorage.Storages
     {
         void Add(T entity);
 
-        T Get(Predicate<T> predicate);
+        T[] Get(Predicate<T> predicate);
 
         void Delete(int entityId);
     }

@@ -11,9 +11,9 @@ namespace UserStorage.Services
 {
     public class Storage : IStorage<User>
     {
-        private IRepository<User> repository;
-        private IValidator<User> validator;
-        private IGenerator generator;
+        private readonly IRepository<User> repository;
+        private readonly IValidator<User> validator;
+        private readonly IGenerator generator;
 
         public Storage(IRepository<User> repository, IValidator<User> validator, IGenerator generator)
         {
@@ -39,14 +39,14 @@ namespace UserStorage.Services
 
             var findResult = repository.Get(u => u.Equals(user));
 
-            if (findResult == null)
+            if (findResult.Length == 0)
             {
                 user.Id = generator.Get();
                 repository.Add(user);
                 return user.Id;
             }
 
-            return findResult.Id;
+            return findResult.First().Id;
         }
 
         public void Delete(int userId)
@@ -65,14 +65,11 @@ namespace UserStorage.Services
             repository.Delete(user.Id);
         }
 
-        public int Search(Predicate<User> predicate)
+        public int[] Search(Predicate<User> predicate)
         {
             var result = repository.Get(predicate);
 
-            if (result == null)
-                return 0;
-
-            return result.Id;
+            return result?.Select(u=>u.Id).ToArray();
         }
     }
 }

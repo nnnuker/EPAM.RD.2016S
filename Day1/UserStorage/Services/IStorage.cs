@@ -11,7 +11,7 @@ namespace UserStorage.Services
     {
         int Add(T entity);
 
-        int Search(Predicate<T> predicate);
+        int[] Search(Predicate<T> predicate);
 
         void Delete(T entity);
 

@@ -22,12 +22,12 @@ namespace UserStorage.Storages
                 users.Add(user);
         }
 
-        public User Get(Predicate<User> predicate)
+        public User[] Get(Predicate<User> predicate)
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return users.Find(predicate);
+            return users.FindAll(predicate).ToArray();
         }
 
         public void Delete(int userId)

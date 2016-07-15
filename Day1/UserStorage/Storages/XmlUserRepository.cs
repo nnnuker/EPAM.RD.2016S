@@ -14,8 +14,8 @@ namespace UserStorage.Storages
 {
     public class XmlUserRepository : IRepository<User>
     {
-        private string filePath;
-        private List<User> users;
+        private readonly string filePath;
+        private readonly List<User> users;
 
         public XmlUserRepository()
         {
@@ -28,16 +28,16 @@ namespace UserStorage.Storages
             if (user != null)
             {
                 users.Add(user);
-                SaveUser(user);
+                SaveUsers();
             }
         }
 
-        public User Get(Predicate<User> predicate)
+        public User[] Get(Predicate<User> predicate)
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return users.Find(predicate);
+            return users.FindAll(predicate).ToArray();
         }
 
         public void Delete(int userId)
@@ -69,25 +69,24 @@ namespace UserStorage.Storages
 
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                using (XmlTextReader reader = new XmlTextReader(fs))
-                {
-                    //if (formatter.CanDeserialize(reader))
-                    //{
-                    //    return formatter.Deserialize(fs) as List<User>;
-                    //}
+                XmlTextReader reader = new XmlTextReader(fs);
 
-                    return new List<User>();
+                if (formatter.CanDeserialize(reader))
+                {
+                    return formatter.Deserialize(reader) as List<User>;
                 }
+
+                return new List<User>();
             }
         }
 
-        private void SaveUser(User user)
+        private void SaveUsers()
         {
-            XmlSerializer formatter = new XmlSerializer(typeof(User), new XmlRootAttribute("Users"));
+            XmlSerializer formatter = new XmlSerializer(typeof(List<User>));
 
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, user);
+                formatter.Serialize(fs, users);
             }
         }
 
