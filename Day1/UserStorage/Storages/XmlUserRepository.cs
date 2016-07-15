@@ -9,6 +9,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using UserStorage.Entities;
 using UserStorage.Infrastructure.CustomConfigSections;
+using UserStorage.Infrastructure.Helpers;
 
 namespace UserStorage.Storages
 {
@@ -19,7 +20,7 @@ namespace UserStorage.Storages
 
         public XmlUserRepository()
         {
-            filePath = GetFilePath();
+            filePath = PathSectionHelper.GetPath();
             users = LoadUsers();
         }
 
@@ -32,12 +33,17 @@ namespace UserStorage.Storages
             }
         }
 
-        public User[] Get(Predicate<User> predicate)
+        public IEnumerable<User> Get(Predicate<User> predicate)
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return users.FindAll(predicate).ToArray();
+            return users.FindAll(predicate);
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return users;
         }
 
         public void Delete(int userId)
@@ -51,16 +57,6 @@ namespace UserStorage.Storages
                 users.Remove(findResult);
                 DeleteUser();
             }
-        }
-
-        private string GetFilePath()
-        {
-            CustomSection section = ConfigurationManager.GetSection("CustomSection") as CustomSection;
-            if (section == null)
-            {
-                throw new ConfigurationErrorsException("Custom section not found");
-            }
-            return section.Path;
         }
 
         private List<User> LoadUsers()

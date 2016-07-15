@@ -9,7 +9,7 @@ namespace UserStorage.Storages
 {
     public class MemoryUserRepository : IRepository<User>
     {
-        private List<User> users;
+        private readonly List<User> users;
 
         public MemoryUserRepository()
         {
@@ -22,12 +22,17 @@ namespace UserStorage.Storages
                 users.Add(user);
         }
 
-        public User[] Get(Predicate<User> predicate)
+        public IEnumerable<User> Get(Predicate<User> predicate)
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            return users.FindAll(predicate).ToArray();
+            return users.FindAll(predicate);
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return users;
         }
 
         public void Delete(int userId)

@@ -5,15 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using UserStorage.Entities;
 using UserStorage.Infrastructure;
+using UserStorage.Replication;
 using UserStorage.Storages;
 
 namespace UserStorage.Services
 {
-    public class Storage : IStorage<User>
+    public class Storage : IStorage<User>, IMaster<User>
     {
         private readonly IRepository<User> repository;
         private readonly IValidator<User> validator;
         private readonly IGenerator generator;
+
+        private readonly List<ISlave<User>> slaves;
 
         public Storage(IRepository<User> repository, IValidator<User> validator, IGenerator generator)
         {
@@ -27,6 +30,7 @@ namespace UserStorage.Services
             this.repository = repository;
             this.validator = validator;
             this.generator = generator;
+            slaves = new List<ISlave<User>>();
         }
 
         public int Add(User user)
@@ -39,10 +43,11 @@ namespace UserStorage.Services
 
             var findResult = repository.Get(u => u.Equals(user));
 
-            if (findResult.Length == 0)
+            if (!findResult.Any())
             {
                 user.Id = generator.Get();
                 repository.Add(user);
+                slaves.ForEach(s => s.OnAdd(repository.GetAll()));
                 return user.Id;
             }
 
@@ -55,6 +60,7 @@ namespace UserStorage.Services
                 throw new ArgumentOutOfRangeException(nameof(userId));
 
             repository.Delete(userId);
+            slaves.ForEach(s => s.OnDelete(repository.GetAll()));
         }
 
         public void Delete(User user)
@@ -63,13 +69,21 @@ namespace UserStorage.Services
                 throw new ArgumentNullException(nameof(user));
 
             repository.Delete(user.Id);
+            slaves.ForEach(s => s.OnDelete(repository.GetAll()));
         }
 
         public int[] Search(Predicate<User> predicate)
         {
             var result = repository.Get(predicate);
 
-            return result?.Select(u=>u.Id).ToArray();
+            return result?.Select(u => u.Id).ToArray();
+        }
+
+        public void Subscribe(ISlave<User> slave)
+        {
+            if (slave == null) throw new ArgumentNullException(nameof(slave));
+
+            slaves.Add(slave);
         }
     }
 }
