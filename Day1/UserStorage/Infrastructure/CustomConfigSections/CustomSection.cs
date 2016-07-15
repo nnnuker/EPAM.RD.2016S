@@ -12,12 +12,6 @@ namespace UserStorage.Infrastructure.CustomConfigSections
         private CustomSection() { }
 
         [ConfigurationProperty("path", IsRequired = true)]
-        public string Path
-        {
-            get
-            {
-                return this["path"] as string;
-            }
-        }
+        public string Path => this["path"] as string;
     }
 }
