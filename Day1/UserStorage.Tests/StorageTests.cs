@@ -79,7 +79,7 @@ namespace UserStorage.Tests
             storage.Add(user);
             storage.Delete(user.Id);
 
-            Assert.AreEqual(0, storage.Search(u => u.Id == 1));
+            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Length);
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace UserStorage.Tests
             storage.Add(user);
             storage.Delete(user);
 
-            Assert.AreEqual(0, storage.Search(u => u.Id == 1));
+            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Length);
         }
 
         [TestMethod]
@@ -98,7 +98,7 @@ namespace UserStorage.Tests
 
             var result = storage.Search(u => u.FirstName == "My");
 
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(1, result.Length);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UserStorage.Storages;
 using UserStorage.Entities;
@@ -24,7 +25,7 @@ namespace UserStorage.Tests
 
             var result = repository.Get(user=>user.Id==0);
 
-            Assert.AreEqual(null, result);
+            Assert.AreEqual(0, result.Length);
         }
 
         [TestMethod]
@@ -35,7 +36,7 @@ namespace UserStorage.Tests
 
             var result = repository.Get(user => user.FirstName == "Name");
 
-            Assert.AreEqual("Name", result?.FirstName);
+            Assert.AreEqual("Name", result?.First().FirstName);
         }
 
         [TestMethod]
@@ -46,7 +47,7 @@ namespace UserStorage.Tests
 
             repository.Delete(10);
 
-            Assert.AreEqual(null, repository.Get(u => u.Id == 10));
+            Assert.AreEqual(0, repository.Get(u => u.Id == 10).Length);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UserStorage.Storages;
 using UserStorage.Entities;
@@ -22,9 +23,9 @@ namespace UserStorage.Tests
         {
             IRepository<User> repository = new XmlUserRepository();
 
-            var result = repository.Get(user => user.Id == 0);
+            var result = repository.Get(user => user.Id == 500);
 
-            Assert.AreEqual(null, result);
+            Assert.AreEqual(0, result.Length);
         }
 
         [TestMethod]
@@ -35,18 +36,18 @@ namespace UserStorage.Tests
 
             var result = repository.Get(user => user.FirstName == "Name");
 
-            Assert.AreEqual("Name", result?.FirstName);
+            Assert.AreEqual("Name", result?.First().FirstName);
         }
 
         [TestMethod]
         public void Delete_ExistentUser_SuccessDeleting()
         {
             IRepository<User> repository = new XmlUserRepository();
-            repository.Add(new User { Id = 10 });
+            repository.Add(new User { Id = 100 });
 
-            repository.Delete(10);
+            repository.Delete(100);
 
-            Assert.AreEqual(null, repository.Get(u => u.Id == 10));
+            Assert.AreEqual(0, repository.Get(u => u.Id == 100).Length);
         }
     }
 }
