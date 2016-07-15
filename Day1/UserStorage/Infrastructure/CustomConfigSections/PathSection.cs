@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace UserStorage.Infrastructure.CustomConfigSections
 {
-    public class CustomSection : ConfigurationSection
+    public class PathSection : ConfigurationSection
     {
-        private CustomSection() { }
+        private PathSection() { }
 
         [ConfigurationProperty("path", IsRequired = true)]
         public string Path => this["path"] as string;
