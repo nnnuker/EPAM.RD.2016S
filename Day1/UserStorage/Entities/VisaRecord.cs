@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace UserStorage.Entities
 {
+    [Serializable]
     public struct VisaRecord
     {
         public string Country { get; set; }
@@ -20,7 +21,7 @@ namespace UserStorage.Entities
             {
                 int hash = (int)2166136261;
 
-                hash = (hash * 16777619) ^ (Country == null ? 0 : Country.GetHashCode());
+                hash = (hash * 16777619) ^ (Country?.GetHashCode() ?? 0);
                 hash = (hash * 16777619) ^ Start.GetHashCode();
                 hash = (hash * 16777619) ^ End.GetHashCode();
                 return hash;
