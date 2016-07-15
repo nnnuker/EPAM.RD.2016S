@@ -6,7 +6,6 @@
 /Task1/SimpleNumbersIterator.Tests/bin/Debug
 /Task1/SimpleNumbersIterator.Tests/obj/Debug
 /Task1/SimpleNumbersIterator/obj/Debug
-/Task1/Task1.sln
 *.StyleCop
 *.Cache
 *.dll
@@ -15,6 +14,4 @@
 /Day1/UserStorage/obj/Debug
 *.csproj
 /Day1/UserStorage.Tests/obj/Debug
-*.sln
 *.suo
-*.xml
