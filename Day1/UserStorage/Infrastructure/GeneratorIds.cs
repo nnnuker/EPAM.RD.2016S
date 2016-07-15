@@ -9,7 +9,7 @@ namespace UserStorage.Infrastructure
 {
     public class GeneratorIds : IGenerator
     {
-        private IEnumerator<int> enumerator;
+        private readonly IEnumerator<int> enumerator;
 
         public GeneratorIds()
         {

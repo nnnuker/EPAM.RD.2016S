@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E449754F-7524-4726-B437-EF1AF8D7C896}</ProjectGuid>
+    <ProjectGuid>{E0075941-DA3B-4CC1-BBE2-61309EC7F980}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SimpleNumbersIterator</RootNamespace>

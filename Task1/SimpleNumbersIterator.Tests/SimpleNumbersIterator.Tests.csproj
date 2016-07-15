@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A024C79C-9CAE-4352-9395-955C590F925F}</ProjectGuid>
+    <ProjectGuid>{FBA8B68A-4FCD-416C-B59E-E43C81C83A17}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SimpleNumbersIterator.Tests</RootNamespace>
@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleNumbersIterator\SimpleNumbersIterator.csproj">
-      <Project>{e449754f-7524-4726-b437-ef1af8d7c896}</Project>
+      <Project>{e0075941-da3b-4cc1-bbe2-61309ec7f980}</Project>
       <Name>SimpleNumbersIterator</Name>
     </ProjectReference>
   </ItemGroup>
