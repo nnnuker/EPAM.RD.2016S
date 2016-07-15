@@ -60,11 +60,11 @@ namespace UserStorage.Services
             throw new NotImplementedException();
         }
 
-        public int[] Search(Predicate<User> predicate)
+        public IEnumerable<int> Search(Predicate<User> predicate)
         {
             var result = repository.Get(predicate);
 
-            return result?.Select(u => u.Id).ToArray();
+            return result?.Select(u => u.Id);
         }
 
         public void OnAdd(IEnumerable<User> entities)

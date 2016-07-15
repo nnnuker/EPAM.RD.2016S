@@ -40,6 +40,8 @@ namespace UserStorage.Services
             this.validator = validator;
             this.generator = generator;
             
+            this.generator.Initialize(repository.GetAll().LastOrDefault()?.Id);
+
             slaves = new List<ISlave<User>>();
         }
 
@@ -121,11 +123,11 @@ namespace UserStorage.Services
                 logger.Trace("User is deleted " + user.Id);
         }
 
-        public int[] Search(Predicate<User> predicate)
+        public IEnumerable<int> Search(Predicate<User> predicate)
         {
             var result = repository.Get(predicate);
 
-            return result?.Select(u => u.Id).ToArray();
+            return result?.Select(u => u.Id);
         }
 
         public void Subscribe(ISlave<User> slave)

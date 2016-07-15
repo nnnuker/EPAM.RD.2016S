@@ -15,5 +15,15 @@ namespace UserStorage.Tests
 
             Assert.AreEqual(1, result);
         }
+
+        [TestMethod]
+        public void GetId_GetIdFrom3_Return5()
+        {
+            IGenerator generator = new GeneratorIds();
+            generator.Initialize(3);
+            var result = generator.Get();
+
+            Assert.AreEqual(5, result);
+        }
     }
 }

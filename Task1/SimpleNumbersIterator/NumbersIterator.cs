@@ -23,7 +23,7 @@ namespace SimpleNumbersIterator
 
         public static IEnumerator<int> GetEnumerator(int last)
         {
-            for (int i = last; i < int.MaxValue; i++)
+            for (int i = last + 1; i < int.MaxValue; i++)
             {
                 if (IsSimple(i))
                 {

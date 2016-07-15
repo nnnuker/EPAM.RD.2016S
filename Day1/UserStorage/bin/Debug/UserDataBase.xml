@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <User>
-    <Id>0</Id>
+    <Id>5</Id>
     <FirstName>Name</FirstName>
     <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
     <Gender>Male</Gender>
@@ -11,101 +11,27 @@
     </Visa>
   </User>
   <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
+    <Id>7</Id>
+    <PersonalId>AB231223</PersonalId>
+    <FirstName>FirstName</FirstName>
+    <LastName>Name</LastName>
+    <DateOfBirth>1994-09-25T00:00:00</DateOfBirth>
     <Gender>Male</Gender>
     <Visa>
+      <Country>Belarus</Country>
       <Start>0001-01-01T00:00:00</Start>
       <End>0001-01-01T00:00:00</End>
     </Visa>
   </User>
   <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
+    <Id>11</Id>
+    <PersonalId>AB231223</PersonalId>
+    <FirstName>My</FirstName>
+    <LastName>Name</LastName>
+    <DateOfBirth>1994-09-25T00:00:00</DateOfBirth>
     <Gender>Male</Gender>
     <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
-      <Start>0001-01-01T00:00:00</Start>
-      <End>0001-01-01T00:00:00</End>
-    </Visa>
-  </User>
-  <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
-    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
-    <Gender>Male</Gender>
-    <Visa>
+      <Country>Belarus</Country>
       <Start>0001-01-01T00:00:00</Start>
       <End>0001-01-01T00:00:00</End>
     </Visa>

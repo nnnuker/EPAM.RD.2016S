@@ -19,14 +19,5 @@ namespace UserStorage.Infrastructure.Helpers
             }
             return section.Path;
         }
-
-        public static string GetIdPath()
-        {
-            if (section == null || section.IdPath == null)
-            {
-                throw new ConfigurationErrorsException("Path section not found");
-            }
-            return section.IdPath.Path;
-        }
     }
 }

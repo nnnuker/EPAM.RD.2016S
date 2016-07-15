@@ -9,5 +9,6 @@ namespace UserStorage.Infrastructure
     public interface IGenerator
     {
         int Get();
+        void Initialize(int? last);
     }
 }

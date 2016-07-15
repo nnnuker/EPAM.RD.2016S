@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UserStorage.Services;
 using UserStorage.Entities;
@@ -11,6 +12,7 @@ namespace UserStorage.Tests
     public class StorageTests
     {
         private IStorage<User> storage;
+        private IStorage<User> storageXml;
         private User user = new User
         {
             DateOfBirth = new DateTime(1994, 9, 25),
@@ -25,6 +27,7 @@ namespace UserStorage.Tests
         public void Initialize()
         {
             storage = new Storage(new MemoryUserRepository(), new ValidatorUsers(), new GeneratorIds());
+            storageXml = new Storage(new XmlUserRepository(), new ValidatorUsers(), new GeneratorIds());
         }
 
         [TestMethod]
@@ -39,11 +42,17 @@ namespace UserStorage.Tests
         [TestMethod]
         public void Add_ValidUser_ReturnsUserId()
         {
-
-
             var result = storage.Add(user);
 
             Assert.AreEqual(1, result);
+        }
+
+        [TestMethod]
+        public void AddXmlRepo_ValidUser_ReturnsUserId()
+        {
+            var result = storageXml.Add(user);
+
+            Assert.IsTrue(storageXml.Search(u=>u.Equals(user)).Count() != 0);
         }
 
         [TestMethod]
@@ -79,7 +88,7 @@ namespace UserStorage.Tests
             storage.Add(user);
             storage.Delete(user.Id);
 
-            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Length);
+            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Count());
         }
 
         [TestMethod]
@@ -88,7 +97,7 @@ namespace UserStorage.Tests
             storage.Add(user);
             storage.Delete(user);
 
-            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Length);
+            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Count());
         }
 
         [TestMethod]
@@ -98,7 +107,7 @@ namespace UserStorage.Tests
 
             var result = storage.Search(u => u.FirstName == "My");
 
-            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(1, result.Count());
         }
     }
 }
