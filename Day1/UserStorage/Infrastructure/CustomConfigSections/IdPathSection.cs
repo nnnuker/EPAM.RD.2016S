@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace UserStorage.Infrastructure.CustomConfigSections
 {
-    public class PathSection : ConfigurationSection
+    public class IdPathSection : ConfigurationElement
     {
-        private PathSection() { }
+        private IdPathSection() { }
 
         [ConfigurationProperty("path", IsRequired = true)]
         public string Path => this["path"] as string;
-
-        [ConfigurationProperty("idPath")]
-        public IdPathSection IdPath => (IdPathSection)this["idPath"];
     }
 }

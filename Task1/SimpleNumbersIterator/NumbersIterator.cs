@@ -10,7 +10,20 @@ namespace SimpleNumbersIterator
     {
         public static IEnumerator<int> GetEnumerator()
         {
-            for (int i = 1; i < int.MaxValue; i++)
+            yield return 1;
+            yield return 2;
+            for (int i = 3; i < int.MaxValue; i = i + 2)
+            {
+                if (IsSimple(i))
+                {
+                    yield return i;
+                }
+            }
+        }
+
+        public static IEnumerator<int> GetEnumerator(int last)
+        {
+            for (int i = last; i < int.MaxValue; i++)
             {
                 if (IsSimple(i))
                 {

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UserStorage.Entities;
+using UserStorage.Factory.Infrastructure.Helpers;
 using UserStorage.Infrastructure;
 using UserStorage.Replication;
 using UserStorage.Services;
@@ -16,6 +18,9 @@ namespace UserStorage.Factory
         private static readonly IMaster<User> masterStorage 
             = new Storage(new XmlUserRepository(), new ValidatorUsers(), new GeneratorIds());
 
+        private static readonly int slavesNumber = ReplicationSectionHelper.GetSlavesNumber();
+        private static int count;
+
         static UserStorageFactory() { }
 
         private UserStorageFactory() { }
@@ -26,10 +31,13 @@ namespace UserStorage.Factory
         {
             get
             {
-                ISlave<User> slave = new SlaveStorage(new MemoryUserRepository());
-                
-                masterStorage.Subscribe(slave);
+                if (count >= slavesNumber)
+                {
+                    throw new InvalidOperationException("Don't have more slave storages");
+                }
+                ISlave<User> slave = new SlaveStorage(new MemoryUserRepository(), masterStorage);
 
+                count++;
                 return slave as IStorage<User>;
             }
         }

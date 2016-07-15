@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using UserStorage.Entities;
-using UserStorage.Infrastructure.CustomConfigSections;
 using UserStorage.Infrastructure.Helpers;
 
 namespace UserStorage.Storages
@@ -16,7 +11,7 @@ namespace UserStorage.Storages
     public class XmlUserRepository : IRepository<User>
     {
         private readonly string filePath;
-        private readonly List<User> users;
+        private List<User> users;
 
         public XmlUserRepository()
         {
@@ -37,7 +32,7 @@ namespace UserStorage.Storages
         {
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-
+            
             return users.FindAll(predicate);
         }
 
@@ -57,6 +52,14 @@ namespace UserStorage.Storages
                 users.Remove(findResult);
                 DeleteUser();
             }
+        }
+
+        public void UpdateRepository(IEnumerable<User> entities)
+        {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+            users = new List<User>(entities);
+            SaveUsers();
         }
 
         private List<User> LoadUsers()

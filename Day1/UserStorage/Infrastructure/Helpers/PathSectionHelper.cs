@@ -10,14 +10,23 @@ namespace UserStorage.Infrastructure.Helpers
 {
     public static class PathSectionHelper
     {
+        private static readonly PathSection section = ConfigurationManager.GetSection("PathSection") as PathSection;
         public static string GetPath()
         {
-            PathSection section = ConfigurationManager.GetSection("PathSection") as PathSection;
             if (section == null)
             {
                 throw new ConfigurationErrorsException("Path section not found");
             }
             return section.Path;
+        }
+
+        public static string GetIdPath()
+        {
+            if (section == null || section.IdPath == null)
+            {
+                throw new ConfigurationErrorsException("Path section not found");
+            }
+            return section.IdPath.Path;
         }
     }
 }

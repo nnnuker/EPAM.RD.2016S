@@ -9,7 +9,7 @@ namespace UserStorage.Storages
 {
     public class MemoryUserRepository : IRepository<User>
     {
-        private readonly List<User> users;
+        private List<User> users;
 
         public MemoryUserRepository()
         {
@@ -45,6 +45,13 @@ namespace UserStorage.Storages
             {
                 users.Remove(findResult);
             }
+        }
+
+        public void UpdateRepository(IEnumerable<User> entities)
+        {
+            if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+            users = new List<User>(entities);
         }
     }
 }
