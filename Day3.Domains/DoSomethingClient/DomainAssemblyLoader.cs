@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.Linq;
 using System.Reflection;
 using MyInterfaces;
 
@@ -16,13 +18,8 @@ namespace DoSomethingClient
             // LoadFile() has a catch. Since it doesn't use a binding context, its dependencies aren't automatically found in its directory. 
 
             var assembly = Assembly.Load(assemblyString);
-            var types = assembly.GetTypes();
 
-            // TODO: Find first type that has DoSomething attribute and implements IDoSomething.
-            // TODO: Create an instance of this type.
-
-            IDoSomething doSomethingService = null; // TODO Save instance to variable.
-            return doSomethingService.DoSomething(data);
+            return GetDoSomethingObject(assembly)?.DoSomething(data);
         }
 
         // Usage:
@@ -36,9 +33,21 @@ namespace DoSomethingClient
             var assembly = Assembly.LoadFile(path);
             var types = assembly.GetTypes();
 
-            Type type = null; // TODO: Find first type that has DoSomething attribute and don't implement IDoSomething.
+            // TODO: Find first type that has DoSomething attribute and don't implement IDoSomething.
+
+            var type = types.FirstOrDefault(t => t.GetCustomAttributes(typeof(DoSomethingAttribute), false).Length != 0
+                && !t.IsAssignableFrom(typeof(IDoSomething)));
+
+            if (type == null)
+                throw new ArgumentNullException("The requested type is not found.");
+
+            var obj = Activator.CreateInstance(type);
+
             // TODO: MethodInfo mi = type.GetMethod("DoSomething");
-            Result result = null;
+
+            var method = type.GetMethod("DoSomething");
+            Result result = method.Invoke(obj, new object[]{ data }) as Result;
+
             // TODO: result = mi.Invoke();
 
             return result;
@@ -48,13 +57,21 @@ namespace DoSomethingClient
         public Result LoadFrom(string fileName, Input data)
         {
             var assembly = Assembly.LoadFrom(fileName);
-            var type = assembly.GetTypes();
 
-            // TODO: Find first type that has DoSomething attribute and implements IDoSomething.
-            // TODO: Create an instance of this type.
+            return GetDoSomethingObject(assembly)?.DoSomething(data);
+        }
 
-            IDoSomething doSomethingService = null; // TODO Save instance to variable.
-            return doSomethingService.DoSomething(data);
+        private IDoSomething GetDoSomethingObject(Assembly assembly)
+        {
+            var types = assembly.GetTypes();
+
+            var type = types.FirstOrDefault(t => t.GetInterfaces().Contains(typeof(IDoSomething))
+                && t.GetCustomAttributes(typeof(DoSomethingAttribute), false).Length != 0);
+
+            if (type == null)
+                throw new ArgumentNullException("The requested type is not found.");
+
+            return Activator.CreateInstance(type) as IDoSomething;
         }
     }
 }
