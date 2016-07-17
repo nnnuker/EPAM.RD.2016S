@@ -22,3 +22,6 @@
 /Day1/UserStorage.Factory/bin/Debug
 /Day3.Attributes/Attributes/obj/Debug
 /Day3.Attributes/Attributes.Tests/obj/Debug
+/Day3.Domains/DoSomethingClient/obj/Debug
+/Day3.Domains/MyInterfaces/obj/Debug
+/Day3.Domains/MyLibrary/obj/Debug
