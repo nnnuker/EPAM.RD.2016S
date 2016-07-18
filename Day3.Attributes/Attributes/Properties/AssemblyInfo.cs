@@ -1,7 +1,7 @@
-﻿using System.Reflection;
+﻿using Attributes;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Attributes;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -9,9 +9,9 @@ using Attributes;
 [assembly: AssemblyTitle("Attributes")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("EPAM Systems")]
 [assembly: AssemblyProduct("Attributes")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright © EPAM Systems 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +21,7 @@ using Attributes;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b9e21d69-f18d-48c2-85f6-cf1ded78befb")]
+[assembly: Guid("9f377d92-6d75-4401-8ba1-99d69c9f9700")]
 
 // Version information for an assembly consists of the following four values:
 //
