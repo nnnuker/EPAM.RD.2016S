@@ -12,7 +12,6 @@
 *.pdb
 *.txt
 /Day1/UserStorage/obj/Debug
-*.csproj
 /Day1/UserStorage.Tests/obj/Debug
 *.suo
 /Day1/UserStorage.Factory/obj/Debug
@@ -26,3 +25,7 @@
 /Day3.Domains/MyInterfaces/obj/Debug
 /Day3.Domains/MyLibrary/obj/Debug
 /Day3.Domains/DoSomethingClient/bin/Debug
+/Day4_Disposable/ConsoleApplication1/bin/Debug
+/Day4_Disposable/ConsoleApplication1/obj/Debug
+/Day4_Streams/CopyFiles/bin/Debug
+/Day4_Streams/CopyFiles/obj/Debug
