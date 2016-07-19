@@ -39,7 +39,7 @@ namespace UserStorage.Services
             {
                 logger.Error("Attempt to add user in slave storage");
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void Delete(int userId)
@@ -48,7 +48,7 @@ namespace UserStorage.Services
             {
                 logger.Error("Attempt to delete user from slave storage");
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void Delete(User user)
@@ -57,7 +57,7 @@ namespace UserStorage.Services
             {
                 logger.Error("Attempt to delete user from slave storage");
             }
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public IEnumerable<int> Search(Predicate<User> predicate)
