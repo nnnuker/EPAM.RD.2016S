@@ -21,11 +21,11 @@ namespace FileStreams
             string source = @"D:\Valery_Larkovich\Projects\EPAM.RD.2016S.Larkovich\Day4_Streams\CopyFiles\TextFile.txt";
             string destin = @"D:\Valery_Larkovich\Projects\EPAM.RD.2016S.Larkovich\Day4_Streams\CopyFiles\TextFileDestin.txt";
 
-            //ByteCopy(source, destin);
-            //BlockCopy(source, destin);
-            //LineCopy(source, destin);
+            ByteCopy(source, destin);
+            BlockCopy(source, destin);
+            LineCopy(source, destin);
             MemoryBufferCopy(source, destin);
-            //WebClient();
+            WebClient();
         }
 
         public static void ByteCopy(string source, string destin)
@@ -133,25 +133,25 @@ namespace FileStreams
             const int blockSize = 1024;
 
             using (var stringReader = new StringReader(stringBuilder.ToString())) // TODO: Use StringReader to read from stringBuilder.
-            using (var memoryStream = new MemoryStream(stringBuilder.Length))
+            using (var memoryStream = new MemoryStream())
             using (var streamWriter = new StreamWriter(memoryStream)) // TODO: Compose StreamWriter with memory stream.
             using (var destinStream = new FileStream(destin, FileMode.Create)) // TODO: Use file stream.
             {
                 char[] buffer = new char[blockSize];
                 int bytesRead;
-
+                streamWriter.AutoFlush = true;
                 do
                 {
-                    bytesRead = stringReader.ReadBlock(buffer, 0, blockSize); // TODO: Read block from stringReader to buffer.
-                    streamWriter.Write(buffer, 0, buffer.Length); // TODO: Write buffer to streamWriter.
+                    bytesRead = stringReader.ReadBlock(buffer, 0, buffer.Length); // TODO: Read block from stringReader to buffer.
+                    
+                    streamWriter.Write(buffer, 0, bytesRead); // TODO: Write buffer to streamWriter.
 
                     //TODO: After implementing everythin check the content of NewTextFile. What's wrong with it, and how this may be fixed?
-
                 }
                 while (bytesRead == blockSize);
 
                 var buf = memoryStream.GetBuffer();
-                var arr = memoryStream.ToArray();
+
                 destinStream.Write(buf, 0, buf.Length); // TODO: write memoryStream.GetBuffer() content to destination stream.
             }
         }
