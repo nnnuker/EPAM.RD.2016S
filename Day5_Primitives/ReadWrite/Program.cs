@@ -38,7 +38,7 @@ namespace ReadWrite
             var list = new MyList();
 
             // TODO: Replace Object type with slim version of manual reset event here.
-            ManualResetEventSlim mres = new ManualResetEventSlim();
+            var mres = new ManualResetEventSlim();
 
             var threads = new List<Thread>();
 

@@ -9,7 +9,7 @@ namespace MutexClient
         {
             bool createdNew = false;
 
-            Mutex mutex = new Mutex(true, "MyMutex", out createdNew);
+            Mutex mutex = new Mutex(false, "MyMutex", out createdNew);
 
             // TODO: mutex = new Mutex(.., "MyMutex", out createdNew);
 

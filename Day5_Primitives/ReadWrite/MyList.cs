@@ -7,7 +7,7 @@ namespace ReadWrite
     // TODO: Use ReaderWriterLockSlim to protect this class.
     public class MyList
     {
-        private List<int> _list = new List<int>()
+        private List<int> list = new List<int>()
         {
             1,
             2,
@@ -15,59 +15,56 @@ namespace ReadWrite
             4
         };
 
-        private ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ReaderWriterLockSlim readerWriterLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public void Add(int value)
         {
-            _readerWriterLock.EnterWriteLock();
-
             try
             {
+                readerWriterLock.EnterWriteLock();
                 Console.WriteLine("Write");
-                _list.Add(value);
+                list.Add(value);
             }
             finally
             {
-                _readerWriterLock.ExitWriteLock();
+                readerWriterLock.ExitWriteLock();
             }
         }
 
         public void Remove()
         {
-            _readerWriterLock.EnterWriteLock();
-
             try
             {
-                if (_list.Count > 0)
+                readerWriterLock.EnterWriteLock();
+                if (list.Count > 0)
                 {
                     Console.WriteLine("Write");
-                    _list.RemoveAt(0);
+                    list.RemoveAt(0);
                 }
             }
             finally
             {
-                _readerWriterLock.ExitWriteLock();
+                readerWriterLock.ExitWriteLock();
             }
         }
 
         public int Get()
         {
-            _readerWriterLock.EnterReadLock();
-
             try
             {
+                readerWriterLock.EnterReadLock();
                 int value = 0;
-                if (_list.Count > 0)
+                if (list.Count > 0)
                 {
                     Console.WriteLine("Read");
-                    value = _list[0];
+                    value = list[0];
                 }
 
                 return value;
             }
             finally
             {
-                _readerWriterLock.EnterReadLock();
+                readerWriterLock.ExitReadLock();
             }
         }
     }
