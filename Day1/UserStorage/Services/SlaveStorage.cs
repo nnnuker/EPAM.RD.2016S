@@ -13,7 +13,7 @@ namespace UserStorage.Services
     {
         private readonly IRepository<User> repository;
 
-        private readonly ILogger logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
         public static BooleanSwitch BooleanSwitch { get; set; } = new BooleanSwitch("switch", "Logger switcher");
 
@@ -42,11 +42,75 @@ namespace UserStorage.Services
             throw new NotSupportedException();
         }
 
+        public IEnumerable<int> SearchByName(string firstName, string lastName)
+        {
+            if (string.IsNullOrEmpty(firstName))
+            {
+                var exception = new ArgumentException("Null or empty firstName search in slave storage.", nameof(firstName));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                var exception = new ArgumentException("Null or empty lastName search in slave storage.", nameof(lastName));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            return repository.Get(u => u.FirstName == firstName && u.LastName == lastName).Select(u => u.Id);
+        }
+
+        public IEnumerable<int> SearchByPersonalId(string personalId)
+        {
+            if (string.IsNullOrEmpty(personalId))
+            {
+                var exception = new ArgumentException("Null or empty personalId search in slave storage.", nameof(personalId));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            return repository.Get(u => u.PersonalId == personalId).Select(u => u.Id);
+        }
+
+        public IEnumerable<int> SearchByVisaCountry(string country)
+        {
+            if (string.IsNullOrEmpty(country))
+            {
+                var exception = new ArgumentException("Null or empty country search in slave storage.", nameof(country));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            return repository.Get(u => u.Visa.Country == country).Select(u => u.Id);
+        }
+
         public void Delete(int userId)
         {
             if (BooleanSwitch.Enabled)
             {
                 logger.Error("Attempt to delete user from slave storage");
+            }
+            throw new NotSupportedException();
+        }
+
+        public void Save()
+        {
+            if (BooleanSwitch.Enabled)
+            {
+                logger.Error("Attempt to save users in slave storage");
             }
             throw new NotSupportedException();
         }
@@ -58,13 +122,6 @@ namespace UserStorage.Services
                 logger.Error("Attempt to delete user from slave storage");
             }
             throw new NotSupportedException();
-        }
-
-        public IEnumerable<int> Search(Predicate<User> predicate)
-        {
-            var result = repository.Get(predicate);
-
-            return result?.Select(u => u.Id);
         }
 
         public void OnAdd(IEnumerable<User> entities)

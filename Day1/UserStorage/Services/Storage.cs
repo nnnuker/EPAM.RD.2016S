@@ -20,7 +20,7 @@ namespace UserStorage.Services
 
         private readonly List<ISlave<User>> slaves;
 
-        private readonly ILogger logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
         public static BooleanSwitch BooleanSwitch { get; set; } = new BooleanSwitch("switch", "Logger switcher");
 
@@ -39,7 +39,7 @@ namespace UserStorage.Services
             this.repository = repository;
             this.validator = validator;
             this.generator = generator;
-            
+
             this.generator.Initialize(repository.GetAll().LastOrDefault()?.Id);
 
             slaves = new List<ISlave<User>>();
@@ -85,6 +85,61 @@ namespace UserStorage.Services
             return findResult.First().Id;
         }
 
+        public IEnumerable<int> SearchByName(string firstName, string lastName)
+        {
+            if (string.IsNullOrEmpty(firstName))
+            {
+                var exception = new ArgumentException("Value cannot be null or empty.", nameof(firstName));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                var exception = new ArgumentException("Value cannot be null or empty.", nameof(lastName));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            return repository.Get(u => u.FirstName == firstName && u.LastName == lastName).Select(u => u.Id);
+        }
+
+        public IEnumerable<int> SearchByPersonalId(string personalId)
+        {
+            if (string.IsNullOrEmpty(personalId))
+            {
+                var exception = new ArgumentException("Value cannot be null or empty.", nameof(personalId));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            return repository.Get(u => u.PersonalId == personalId).Select(u => u.Id);
+        }
+
+        public IEnumerable<int> SearchByVisaCountry(string country)
+        {
+            if (string.IsNullOrEmpty(country))
+            {
+                var exception = new ArgumentException("Value cannot be null or empty.", nameof(country));
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            return repository.Get(u => u.Visa.Country == country).Select(u => u.Id);
+        }
+
         public void Delete(int userId)
         {
             if (userId <= 0)
@@ -104,6 +159,11 @@ namespace UserStorage.Services
                 logger.Trace("User is deleted " + userId);
         }
 
+        public void Save()
+        {
+            repository.Save();
+        }
+
         public void Delete(User user)
         {
             if (user == null)
@@ -121,13 +181,6 @@ namespace UserStorage.Services
 
             if (BooleanSwitch.Enabled)
                 logger.Trace("User is deleted " + user.Id);
-        }
-
-        public IEnumerable<int> Search(Predicate<User> predicate)
-        {
-            var result = repository.Get(predicate);
-
-            return result?.Select(u => u.Id);
         }
 
         public void Subscribe(ISlave<User> slave)

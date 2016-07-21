@@ -24,7 +24,6 @@ namespace UserStorage.Storages
             if (user != null)
             {
                 users.Add(user);
-                SaveUsers();
             }
         }
 
@@ -50,7 +49,16 @@ namespace UserStorage.Storages
             if (findResult != null)
             {
                 users.Remove(findResult);
-                DeleteUser();
+            }
+        }
+
+        public void Save()
+        {
+            var formatter = new XmlSerializer(typeof(List<User>));
+
+            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                formatter.Serialize(fs, users);
             }
         }
 
@@ -59,7 +67,7 @@ namespace UserStorage.Storages
             if (entities == null) throw new ArgumentNullException(nameof(entities));
 
             users = new List<User>(entities);
-            SaveUsers();
+            Save();
         }
 
         private List<User> LoadUsers()
@@ -76,26 +84,6 @@ namespace UserStorage.Storages
                 }
 
                 return new List<User>();
-            }
-        }
-
-        private void SaveUsers()
-        {
-            XmlSerializer formatter = new XmlSerializer(typeof(List<User>));
-
-            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, users);
-            }
-        }
-
-        private void DeleteUser()
-        {
-            XmlSerializer formatter = new XmlSerializer(typeof(List<User>));
-
-            using (FileStream fs = new FileStream(filePath, FileMode.Create))
-            {
-                formatter.Serialize(fs, users);
             }
         }
     }

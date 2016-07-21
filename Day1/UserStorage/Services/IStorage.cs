@@ -11,10 +11,16 @@ namespace UserStorage.Services
     {
         int Add(T entity);
 
-        IEnumerable<int> Search(Predicate<T> predicate);
+        IEnumerable<int> SearchByName(string firstName, string lastName);
+
+        IEnumerable<int> SearchByPersonalId(string personalId);
+
+        IEnumerable<int> SearchByVisaCountry(string country);
 
         void Delete(T entity);
 
         void Delete(int entityId);
+
+        void Save();
     }
 }

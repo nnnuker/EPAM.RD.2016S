@@ -47,6 +47,11 @@ namespace UserStorage.Storages
             }
         }
 
+        public void Save()
+        {
+            
+        }
+
         public void UpdateRepository(IEnumerable<User> entities)
         {
             if (entities == null) throw new ArgumentNullException(nameof(entities));
