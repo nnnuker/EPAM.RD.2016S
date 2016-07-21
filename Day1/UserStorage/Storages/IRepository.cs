@@ -18,7 +18,5 @@ namespace UserStorage.Storages
         void Delete(int entityId);
 
         void Save();
-
-        void UpdateRepository(IEnumerable<T> entities);
     }
 }
