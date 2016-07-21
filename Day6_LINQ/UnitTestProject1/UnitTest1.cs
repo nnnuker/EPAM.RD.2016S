@@ -352,5 +352,33 @@ namespace UnitTestProject1
 
             Assert.IsTrue(expectedData == actualData);
         }
+
+        [TestMethod]
+        public void CollectionAssertAnonymousType()
+        {
+            var NameInfo = new[]
+            {
+                new {name = "Max", Info = "info about Max"},
+                new {name = "Alan", Info = "About Alan"},
+                new {name = "Alex", Info = "About Alex"}
+            }.ToList();
+
+            //ToDo Add code for second list
+
+            var data = (from user in userListSecond
+                          join info in NameInfo
+                          on user.Name
+                          equals info.name
+                          select new { user.Age, user.Gender, user.Name, user.Salary, info.Info }).ToList();
+
+            var expectedData = new[]
+            {
+               new {Age = 23, Gender = Gender.Man, Name = "Max", Salary = 24000m, Info = "info about Max"},
+               new {Age = 23, Gender = Gender.Man, Name = "Max", Salary = 24000m, Info = "info about Max"},
+               new {Age = 45, Gender = Gender.Man, Name = "Alex", Salary = 54000m, Info = "About Alex"}
+            }.ToList();
+
+            CollectionAssert.AreEqual(expectedData, data);
+        }
     }
 }
