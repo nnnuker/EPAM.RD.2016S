@@ -10,14 +10,30 @@ namespace UserStorage.Factory.Infrastructure.Helpers
 {
     public static class ReplicationSectionHelper
     {
-        public static int GetSlavesNumber()
+        public static StorageElement GetMasterSection()
         {
-            ReplicationSection section = ConfigurationManager.GetSection("ReplicationSection") as ReplicationSection;
+            var section = ConfigurationManager.GetSection("Replication") as ReplicationSection;
             if (section == null)
             {
-                throw new ConfigurationErrorsException("Path section not found");
+                throw new ConfigurationErrorsException("Replication section not found");
             }
-            return section.SlavesNumber;
+
+            var master = section.Storages.OfType<StorageElement>().Single(s => s.IsMaster);
+            
+            return master;
+        }
+
+        public static IEnumerable<StorageElement> GetSlaveSections()
+        {
+            var section = ConfigurationManager.GetSection("Replication") as ReplicationSection;
+            if (section == null)
+            {
+                throw new ConfigurationErrorsException("Replication section not found");
+            }
+
+            var slaves = section.Storages.OfType<StorageElement>().Where(s => !s.IsMaster);
+
+            return slaves;
         }
     }
 }

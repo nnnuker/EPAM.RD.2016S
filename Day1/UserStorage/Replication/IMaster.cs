@@ -1,13 +1,13 @@
 ﻿using System;
 using UserStorage.Entities;
+using UserStorage.Replication.Events;
+using UserStorage.Services;
 
 namespace UserStorage.Replication
 {
-    public interface IMaster<T> where T : IEntity
+    public interface IMaster : IUserStorage
     {
-        void Subscribe(ISlave<T> slave);
-
-        event EventHandler OnAddEvent;
-        event EventHandler OnDeleteEvent;
+        event EventHandler<MessageEventArgs> AddEvent;
+        event EventHandler<MessageEventArgs> DeleteEvent;
     }
 }

@@ -3,26 +3,29 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using UserStorage.Entities;
 using UserStorage.Infrastructure;
 using UserStorage.Replication;
+using UserStorage.Replication.Events;
 using UserStorage.Storages;
 
 namespace UserStorage.Services
 {
-    public class Storage : IStorage<User>, IMaster<User>
+    public class Storage : MarshalByRefObject, IMaster
     {
         private readonly IRepository<User> repository;
         private readonly IValidator<User> validator;
         private readonly IGenerator generator;
-
-        private readonly List<ISlave<User>> slaves;
+        private readonly ReaderWriterLockSlim lockSlim;
 
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
-
         public static BooleanSwitch BooleanSwitch { get; set; } = new BooleanSwitch("switch", "Logger switcher");
+
+        public event EventHandler<MessageEventArgs> AddEvent = delegate {};
+        public event EventHandler<MessageEventArgs> DeleteEvent = delegate {};
 
         public Storage(IRepository<User> repository, IValidator<User> validator, IGenerator generator)
         {
@@ -40,9 +43,9 @@ namespace UserStorage.Services
             this.validator = validator;
             this.generator = generator;
 
-            this.generator.Initialize(repository.GetAll().LastOrDefault()?.Id);
+            this.generator.Initialize(repository.GetAll().Max(u=>u.Id));
 
-            slaves = new List<ISlave<User>>();
+            this.lockSlim = new ReaderWriterLockSlim();
         }
 
         public int Add(User user)
@@ -73,9 +76,17 @@ namespace UserStorage.Services
             {
                 user.Id = generator.Get();
 
-                repository.Add(user);
-                slaves.ForEach(s => s.OnAdd(repository.GetAll()));
-
+                try
+                {
+                    lockSlim.EnterWriteLock();
+                    repository.Add(user);
+                    OnAddUser(new MessageEventArgs(user));
+                }
+                finally
+                {
+                    lockSlim.ExitWriteLock();
+                }
+                
                 if (BooleanSwitch.Enabled)
                     logger.Trace("Added new user with id " + user.Id.ToString());
 
@@ -85,7 +96,30 @@ namespace UserStorage.Services
             return findResult.First().Id;
         }
 
-        public IEnumerable<int> SearchByName(string firstName, string lastName)
+        public User Search(int id)
+        {
+            if (id <= 0)
+            {
+                var exception = new ArgumentOutOfRangeException(nameof(id), "Search id in master is out of range");
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            try
+            {
+                lockSlim.EnterReadLock();
+                return repository.Get(u => u.Id == id).FirstOrDefault();
+            }
+            finally
+            {
+                lockSlim.ExitReadLock();
+            }
+        }
+
+        public int[] SearchByName(string firstName, string lastName)
         {
             if (string.IsNullOrEmpty(firstName))
             {
@@ -107,10 +141,18 @@ namespace UserStorage.Services
                 throw exception;
             }
 
-            return repository.Get(u => u.FirstName == firstName && u.LastName == lastName).Select(u => u.Id);
+            try
+            {
+                lockSlim.EnterReadLock();
+                return repository.Get(u => u.FirstName == firstName && u.LastName == lastName).Select(u => u.Id).ToArray();
+            }
+            finally
+            {
+                lockSlim.ExitReadLock();
+            }
         }
 
-        public IEnumerable<int> SearchByPersonalId(string personalId)
+        public int[] SearchByPersonalId(string personalId)
         {
             if (string.IsNullOrEmpty(personalId))
             {
@@ -122,10 +164,18 @@ namespace UserStorage.Services
                 throw exception;
             }
 
-            return repository.Get(u => u.PersonalId == personalId).Select(u => u.Id);
+            try
+            {
+                lockSlim.EnterReadLock();
+                return repository.Get(u => u.PersonalId == personalId).Select(u => u.Id).ToArray();
+            }
+            finally
+            {
+                lockSlim.ExitReadLock();
+            }
         }
 
-        public IEnumerable<int> SearchByVisaCountry(string country)
+        public int[] SearchByVisaCountry(string country)
         {
             if (string.IsNullOrEmpty(country))
             {
@@ -137,10 +187,18 @@ namespace UserStorage.Services
                 throw exception;
             }
 
-            return repository.Get(u => u.Visa.Country == country).Select(u => u.Id);
+            try
+            {
+                lockSlim.EnterReadLock();
+                return repository.Get(u => u.Visa.Country == country).Select(u => u.Id).ToArray();
+            }
+            finally
+            {
+                lockSlim.ExitReadLock();
+            }
         }
 
-        public void Delete(int userId)
+        public bool Delete(int userId)
         {
             if (userId <= 0)
             {
@@ -152,11 +210,23 @@ namespace UserStorage.Services
                 throw exception;
             }
 
-            repository.Delete(userId);
-            slaves.ForEach(s => s.OnDelete(repository.GetAll()));
+            try
+            {
+                lockSlim.EnterWriteLock();
+                var findResult = repository.Get(u => u.Id == userId).FirstOrDefault();
 
-            if (BooleanSwitch.Enabled)
-                logger.Trace("User is deleted " + userId);
+                if (findResult == null) return false;
+
+                repository.Delete(userId);
+                OnDeleteUser(new MessageEventArgs(findResult));
+                if (BooleanSwitch.Enabled)
+                    logger.Trace("Attempt to delete user " + userId);
+                return true;
+            }
+            finally
+            {
+                lockSlim.ExitWriteLock();
+            }
         }
 
         public void Save()
@@ -164,35 +234,22 @@ namespace UserStorage.Services
             repository.Save();
         }
 
-        public void Delete(User user)
+        protected virtual void OnAddUser(MessageEventArgs e)
         {
-            if (user == null)
-            {
-                var exception = new ArgumentNullException(nameof(user) + " is null ref object.");
-                if (BooleanSwitch.Enabled)
-                {
-                    logger.Error(exception.Message);
-                }
-                throw exception;
-            }
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-            repository.Delete(user.Id);
-            slaves.ForEach(s => s.OnDelete(repository.GetAll()));
-
-            if (BooleanSwitch.Enabled)
-                logger.Trace("User is deleted " + user.Id);
+            var tempAction = Volatile.Read(ref AddEvent);
+            tempAction?.Invoke(this, e);
         }
 
-        public void Subscribe(ISlave<User> slave)
+        protected virtual void OnDeleteUser(MessageEventArgs e)
         {
-            if (slave == null) throw new ArgumentNullException(nameof(slave));
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
 
-            slaves.Add(slave);
-
-            if (BooleanSwitch.Enabled)
-                logger.Trace("Slave is subscribed to master");
-
-            slave.OnAdd(repository.GetAll());
+            var tempAction = Volatile.Read(ref DeleteEvent);
+            tempAction?.Invoke(this, e);
         }
     }
 }

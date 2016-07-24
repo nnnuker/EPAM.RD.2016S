@@ -29,6 +29,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>keyFactory.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -41,7 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domains\DomainAssemblyLoader.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\GeneratorElement.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\ReplicationSection.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\RepositoryElement.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\StorageElement.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\StoragesCollection.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\ValidatorElement.cs" />
     <Compile Include="Infrastructure\Helpers\ReplicationSectionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserStorageFactory.cs" />
@@ -51,6 +63,9 @@
       <Project>{ed2ff53f-fe16-4e65-b4f2-04555fccff1f}</Project>
       <Name>UserStorage</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="keyFactory.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

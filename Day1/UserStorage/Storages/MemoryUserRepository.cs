@@ -7,9 +7,10 @@ using UserStorage.Entities;
 
 namespace UserStorage.Storages
 {
+    [Serializable]
     public class MemoryUserRepository : IRepository<User>
     {
-        private List<User> users;
+        private readonly List<User> users;
 
         public MemoryUserRepository()
         {
@@ -50,13 +51,6 @@ namespace UserStorage.Storages
         public void Save()
         {
             
-        }
-
-        public void UpdateRepository(IEnumerable<User> entities)
-        {
-            if (entities == null) throw new ArgumentNullException(nameof(entities));
-
-            users = new List<User>(entities);
         }
     }
 }

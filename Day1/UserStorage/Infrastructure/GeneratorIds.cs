@@ -4,13 +4,14 @@ using SimpleNumbersIterator;
 
 namespace UserStorage.Infrastructure
 {
+    [Serializable]
     public class GeneratorIds : IGenerator
     {
-        private IEnumerator<int> enumerator;
+        private readonly NumbersIterator enumerator;
 
         public GeneratorIds()
         {
-            enumerator = NumbersIterator.GetEnumerator();
+            enumerator = new NumbersIterator();
         }
 
         public int Get()
@@ -23,11 +24,11 @@ namespace UserStorage.Infrastructure
             throw new InvalidOperationException();
         }
 
-        public void Initialize(int? last = 1)
+        public void Initialize(int? last = 0)
         {
-            if (last > 1)
+            if (last > 0)
             {
-                enumerator = NumbersIterator.GetEnumerator(last.Value);
+                enumerator.SetCurrent(last.Value);
             }
         }
     }

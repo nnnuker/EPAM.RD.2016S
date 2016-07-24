@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserStorage.Entities;
+﻿using UserStorage.Services;
 
 namespace UserStorage.Replication
 {
-    public interface ISlave<T> where T : IEntity
+    public interface ISlave : IUserStorage
     {
-        void OnAdd(IEnumerable<T> entities);
-        void OnDelete(IEnumerable<T> entities);
+        
     }
 }

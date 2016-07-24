@@ -14,11 +14,40 @@
     </Visa>
   </User>
   <User>
-    <Id>0</Id>
-    <FirstName>Name</FirstName>
+    <Id>2</Id>
+    <PersonalId>AB123</PersonalId>
+    <FirstName>Petr</FirstName>
+    <LastName>Petrov</LastName>
     <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
     <Gender>Male</Gender>
     <Visa>
+      <Country>Belarus</Country>
+      <Start>0001-01-01T00:00:00</Start>
+      <End>0001-01-01T00:00:00</End>
+    </Visa>
+  </User>
+  <User>
+    <Id>3</Id>
+    <PersonalId>AB123</PersonalId>
+    <FirstName>Ivan</FirstName>
+    <LastName>Petrov</LastName>
+    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
+    <Gender>Male</Gender>
+    <Visa>
+      <Country>Belarus</Country>
+      <Start>0001-01-01T00:00:00</Start>
+      <End>0001-01-01T00:00:00</End>
+    </Visa>
+  </User>
+  <User>
+    <Id>5</Id>
+    <PersonalId>AB123</PersonalId>
+    <FirstName>Vanja</FirstName>
+    <LastName>Petrov</LastName>
+    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
+    <Gender>Male</Gender>
+    <Visa>
+      <Country>Belarus</Country>
       <Start>0001-01-01T00:00:00</Start>
       <End>0001-01-01T00:00:00</End>
     </Visa>

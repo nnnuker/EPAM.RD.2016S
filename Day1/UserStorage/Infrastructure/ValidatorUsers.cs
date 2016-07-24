@@ -7,6 +7,7 @@ using UserStorage.Entities;
 
 namespace UserStorage.Infrastructure
 {
+    [Serializable]
     public class ValidatorUsers : IValidator<User>
     {
         public bool IsValid(User user)

@@ -11,7 +11,8 @@ namespace UserStorage.Factory.Infrastructure.CustomConfigSections
     {
         private ReplicationSection() { }
 
-        [ConfigurationProperty("slavesNumber", IsRequired = true)]
-        public int SlavesNumber => (int)this["slavesNumber"];
+        [ConfigurationProperty("Storages")]
+        [ConfigurationCollection(typeof(StorageElement), AddItemName = "Storage")]
+        public StoragesCollection Storages => (StoragesCollection)base["Storages"];
     }
 }

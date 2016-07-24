@@ -11,15 +11,9 @@ namespace UserStorage.Services
     {
         int Add(T entity);
 
-        IEnumerable<int> SearchByName(string firstName, string lastName);
+        T Search(int id);
 
-        IEnumerable<int> SearchByPersonalId(string personalId);
-
-        IEnumerable<int> SearchByVisaCountry(string country);
-
-        void Delete(T entity);
-
-        void Delete(int entityId);
+        bool Delete(int entityId);
 
         void Save();
     }

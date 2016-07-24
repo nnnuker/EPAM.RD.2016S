@@ -4,18 +4,18 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using UserStorage.Entities;
-using UserStorage.Infrastructure.Helpers;
 
 namespace UserStorage.Storages
 {
+    [Serializable]
     public class XmlUserRepository : IRepository<User>
     {
         private readonly string filePath;
-        private List<User> users;
+        private readonly List<User> users;
 
-        public XmlUserRepository()
+        public XmlUserRepository(string path)
         {
-            filePath = PathSectionHelper.GetPath();
+            filePath = path;
             users = LoadUsers();
         }
 
@@ -60,14 +60,6 @@ namespace UserStorage.Storages
             {
                 formatter.Serialize(fs, users);
             }
-        }
-
-        public void UpdateRepository(IEnumerable<User> entities)
-        {
-            if (entities == null) throw new ArgumentNullException(nameof(entities));
-
-            users = new List<User>(entities);
-            Save();
         }
 
         private List<User> LoadUsers()
