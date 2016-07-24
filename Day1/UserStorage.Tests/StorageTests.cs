@@ -11,10 +11,11 @@ namespace UserStorage.Tests
     [TestClass]
     public class StorageTests
     {
-        private IStorage<User> storage;
-        private IStorage<User> storageXml;
+        private IUserStorage storage;
+        private IUserStorage storageXml;
         private User user = new User
         {
+            Id = 1,
             DateOfBirth = new DateTime(1994, 9, 25),
             FirstName = "My",
             LastName = "Name",
@@ -27,7 +28,7 @@ namespace UserStorage.Tests
         public void Initialize()
         {
             storage = new Storage(new MemoryUserRepository(), new ValidatorUsers(), new GeneratorIds());
-            storageXml = new Storage(new XmlUserRepository(), new ValidatorUsers(), new GeneratorIds());
+            storageXml = new Storage(new XmlUserRepository(@"d:\Projects\EPAM.RD.2016S.Larkovich\Day1\UserStorage.Tests\bin\Debug\UserDataBase.xml"), new ValidatorUsers(), new GeneratorIds());
         }
 
         [TestMethod]
@@ -52,7 +53,7 @@ namespace UserStorage.Tests
         {
             var result = storageXml.Add(user);
 
-            Assert.IsTrue(storageXml.Search(u=>u.Equals(user)).Count() != 0);
+            Assert.IsTrue(storageXml.Search(user.Id) != null);
         }
 
         [TestMethod]
@@ -88,16 +89,16 @@ namespace UserStorage.Tests
             storage.Add(user);
             storage.Delete(user.Id);
 
-            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Count());
+            Assert.AreEqual(null, storage.Search(1));
         }
 
         [TestMethod]
         public void Delete_ByUser_ExpectDelete()
         {
             storage.Add(user);
-            storage.Delete(user);
+            storage.Delete(user.Id);
 
-            Assert.AreEqual(0, storage.Search(u => u.Id == 1).Count());
+            Assert.AreEqual(null, storage.Search(1));
         }
 
         [TestMethod]
@@ -105,7 +106,7 @@ namespace UserStorage.Tests
         {
             storage.Add(user);
 
-            var result = storage.Search(u => u.FirstName == "My");
+            var result = storage.SearchByName("My", "Name");
 
             Assert.AreEqual(1, result.Count());
         }
