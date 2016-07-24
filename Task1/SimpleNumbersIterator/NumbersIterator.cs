@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,33 +7,58 @@ using System.Threading.Tasks;
 
 namespace SimpleNumbersIterator
 {
-    public static class NumbersIterator
+    [Serializable]
+    public class NumbersIterator : IEnumerator<int>
     {
-        public static IEnumerator<int> GetEnumerator()
+        private int current;
+
+        public int Current => current;
+        object IEnumerator.Current => Current;
+
+        public NumbersIterator()
         {
-            yield return 1;
-            yield return 2;
-            for (int i = 3; i < int.MaxValue; i = i + 2)
-            {
-                if (IsSimple(i))
-                {
-                    yield return i;
-                }
-            }
         }
 
-        public static IEnumerator<int> GetEnumerator(int last)
+        public void SetCurrent(int current)
         {
-            for (int i = last + 1; i < int.MaxValue; i++)
-            {
-                if (IsSimple(i))
-                {
-                    yield return i;
-                }
-            }
+            this.current = current;
         }
 
-        private static bool IsSimple(int num)
+        public bool MoveNext()
+        {
+            try
+            {
+                checked
+                {
+                    while (current < int.MaxValue)
+                    {
+                        current++;
+                        if (IsSimple(current))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (OverflowException)
+            {
+                Reset();
+                return false;
+            }
+
+            return true;
+        }
+
+        public void Reset()
+        {
+            current = 0;
+        }
+
+        public void Dispose()
+        {
+        }
+
+        private bool IsSimple(int num)
         {
             for (int i = 2; i <= num / 2; i++)
             {
