@@ -7,7 +7,7 @@ namespace UserStorage.Replication
 {
     public interface IMaster : IUserStorage
     {
-        event EventHandler<MessageEventArgs> AddEvent;
-        event EventHandler<MessageEventArgs> DeleteEvent;
+        void SubscribeToAddUser(ISlave slave);
+        void SubscribeToDeleteUser(ISlave slave);
     }
 }

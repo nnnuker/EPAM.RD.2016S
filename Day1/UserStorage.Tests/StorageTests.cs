@@ -28,7 +28,8 @@ namespace UserStorage.Tests
         public void Initialize()
         {
             storage = new Storage(new MemoryUserRepository(), new ValidatorUsers(), new GeneratorIds());
-            storageXml = new Storage(new XmlUserRepository(@"d:\Projects\EPAM.RD.2016S.Larkovich\Day1\UserStorage.Tests\bin\Debug\UserDataBase.xml"), new ValidatorUsers(), new GeneratorIds());
+            storageXml = new Storage(new XmlUserRepository(@"d:\Projects\EPAM.RD.2016S.Larkovich\Day1\UserStorage.Tests\bin\Debug\UserDataBase.xml"), 
+                new ValidatorUsers(), new GeneratorIds());
         }
 
         [TestMethod]

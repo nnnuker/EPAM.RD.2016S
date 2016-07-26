@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,20 +17,29 @@ namespace UserStorage.Services
 {
     public class Storage : MarshalByRefObject, IMaster
     {
+        #region Fields
+
         private readonly IRepository<User> repository;
         private readonly IValidator<User> validator;
         private readonly IGenerator generator;
+        private readonly IMessageSender messageSender;
         private readonly ReaderWriterLockSlim lockSlim;
+
+        private readonly List<ISlave> usersNotifyOnAdd;
+        private readonly List<ISlave> usersNotifyOnDelete;
+
+        #endregion
+
+        #region Logger
 
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public static BooleanSwitch BooleanSwitch { get; set; } = new BooleanSwitch("switch", "Logger switcher");
 
-        public event EventHandler<MessageEventArgs> AddEvent = delegate {};
-        public event EventHandler<MessageEventArgs> DeleteEvent = delegate {};
+        #endregion
 
-        public Storage(IRepository<User> repository, IValidator<User> validator, IGenerator generator)
+        public Storage(IRepository<User> repository, IValidator<User> validator, IGenerator generator, IMessageSender messageSender)
         {
-            if (repository == null || validator == null || generator == null)
+            if (repository == null || validator == null || generator == null || messageSender == null)
             {
                 var exception = new ArgumentNullException("Error while creating master storage.");
                 if (BooleanSwitch.Enabled)
@@ -42,10 +52,14 @@ namespace UserStorage.Services
             this.repository = repository;
             this.validator = validator;
             this.generator = generator;
+            this.messageSender = messageSender;
 
             this.generator.Initialize(repository.GetAll().Max(u=>u.Id));
 
             this.lockSlim = new ReaderWriterLockSlim();
+
+            usersNotifyOnAdd = new List<ISlave>();
+            usersNotifyOnDelete = new List<ISlave>();
         }
 
         public int Add(User user)
@@ -80,7 +94,7 @@ namespace UserStorage.Services
                 {
                     lockSlim.EnterWriteLock();
                     repository.Add(user);
-                    OnAddUser(new MessageEventArgs(user));
+                    OnAddUser(new Message(new[] {user}, MessageEnum.Add));
                 }
                 finally
                 {
@@ -218,7 +232,7 @@ namespace UserStorage.Services
                 if (findResult == null) return false;
 
                 repository.Delete(userId);
-                OnDeleteUser(new MessageEventArgs(findResult));
+                OnDeleteUser(new Message(new[] {findResult}, MessageEnum.Delete));
                 if (BooleanSwitch.Enabled)
                     logger.Trace("Attempt to delete user " + userId);
                 return true;
@@ -234,22 +248,53 @@ namespace UserStorage.Services
             repository.Save();
         }
 
-        protected virtual void OnAddUser(MessageEventArgs e)
+        public void SubscribeToAddUser(ISlave slave)
         {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
+            if (slave == null)
+            {
+                var exception = new ArgumentNullException(nameof(slave) + " is null ref object.");
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
 
-            var tempAction = Volatile.Read(ref AddEvent);
-            tempAction?.Invoke(this, e);
+            messageSender.SendMessage(new []{slave}, new Message(repository.GetAll(), MessageEnum.Add));
+            usersNotifyOnAdd.Add(slave);
         }
 
-        protected virtual void OnDeleteUser(MessageEventArgs e)
+        public void SubscribeToDeleteUser(ISlave slave)
+        {
+            if (slave == null)
+            {
+                var exception = new ArgumentNullException(nameof(slave) + " is null ref object.");
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            usersNotifyOnDelete.Add(slave);
+        }
+
+        private void OnAddUser(Message e)
         {
             if (e == null)
                 throw new ArgumentNullException(nameof(e));
 
-            var tempAction = Volatile.Read(ref DeleteEvent);
-            tempAction?.Invoke(this, e);
+            messageSender.SendMessage(usersNotifyOnAdd, e);
+
+            //IPEndPoint ip = new IPEndPoint(new IPAddress(545456), 5555);
+        }
+
+        private void OnDeleteUser(Message e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            messageSender.SendMessage(usersNotifyOnDelete, e);
         }
     }
 }

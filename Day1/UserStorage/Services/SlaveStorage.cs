@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 using UserStorage.Entities;
 using UserStorage.Replication;
@@ -14,10 +19,13 @@ namespace UserStorage.Services
     public class SlaveStorage : MarshalByRefObject, ISlave
     {
         private readonly IRepository<User> repository;
+        private readonly IPEndPoint clientEndPoint;
         private readonly ReaderWriterLockSlim lockSlim;
 
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public static BooleanSwitch BooleanSwitch { get; set; } = new BooleanSwitch("switch", "Logger switcher");
+
+        public IPEndPoint ClientEndPoint => clientEndPoint;
 
         public SlaveStorage(IRepository<User> repository, IMaster master)
         {
@@ -33,10 +41,33 @@ namespace UserStorage.Services
 
             this.repository = repository;
 
-            master.AddEvent += OnAdd;
-            master.DeleteEvent += OnDelete;
+            master.SubscribeToAddUser(this);
+            master.SubscribeToDeleteUser(this);
 
             lockSlim = new ReaderWriterLockSlim();
+        }
+
+        public SlaveStorage(IRepository<User> repository, IMaster master, IPEndPoint clientEndPoint)
+        {
+            if (repository == null)
+            {
+                var exception = new ArgumentNullException(nameof(repository) + " is null ref object.");
+                if (BooleanSwitch.Enabled)
+                {
+                    logger.Error(exception.Message);
+                }
+                throw exception;
+            }
+
+            this.repository = repository;
+            this.clientEndPoint = clientEndPoint;
+
+            lockSlim = new ReaderWriterLockSlim();
+
+            ListenForNotify();
+
+            master.SubscribeToAddUser(this);
+            master.SubscribeToDeleteUser(this);
         }
 
         public int Add(User user)
@@ -150,6 +181,31 @@ namespace UserStorage.Services
             }
         }
 
+        public void OnNotifyUser(Message message)
+        {
+            switch (message.MessageType)
+            {
+                case MessageEnum.Add:
+                    {
+                        foreach (var user in message.UserData)
+                        {
+                            repository.Add(user);
+                        }
+                        break;
+                    }
+                case MessageEnum.Delete:
+                    {
+                        foreach (var user in message.UserData)
+                        {
+                            repository.Delete(user.Id);
+                        }
+                        break;
+                    }
+                default:
+                    throw new InvalidEnumArgumentException(nameof(message.MessageType));
+            }
+        }
+
         public bool Delete(int userId)
         {
             if (BooleanSwitch.Enabled)
@@ -168,24 +224,38 @@ namespace UserStorage.Services
             throw new NotSupportedException();
         }
 
-        private void OnAdd(object sender, MessageEventArgs eventArgs)
+        private void ListenForNotify()
         {
-            repository.Add(eventArgs.UserData);
-
-            if (BooleanSwitch.Enabled)
+            var thread = new Thread(() =>
             {
-                logger.Trace("Add user in slave storage");
-            }
-        }
+                TcpListener listener = null;
+                try
+                {
+                    listener = new TcpListener(clientEndPoint);
+                    listener.Start();
 
-        private void OnDelete(object sender, MessageEventArgs eventArgs)
-        {
-            repository.Delete(eventArgs.UserData.Id);
+                    var formatter = new BinaryFormatter();
 
-            if (BooleanSwitch.Enabled)
-            {
-                logger.Trace("Delete user from slave storage ");
-            }
+                    while (true)
+                    {
+                        var client = listener.AcceptTcpClient();
+                        using (var stream = client.GetStream())
+                        {
+                            var message = formatter.Deserialize(stream) as Message;
+                            OnNotifyUser(message);
+                        }
+                    }
+                }
+                finally
+                {
+                    listener?.Stop();
+                }
+            });
+
+            thread.IsBackground = true;
+
+            thread.Start();
+
         }
     }
 }

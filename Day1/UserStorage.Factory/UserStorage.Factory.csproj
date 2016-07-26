@@ -49,10 +49,12 @@
   <ItemGroup>
     <Compile Include="Domains\DomainAssemblyLoader.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\GeneratorElement.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\MessageSenderElement.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\ReplicationSection.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\RepositoryElement.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\StorageElement.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\StoragesCollection.cs" />
+    <Compile Include="Infrastructure\CustomConfigSections\TcpInfoElement.cs" />
     <Compile Include="Infrastructure\CustomConfigSections\ValidatorElement.cs" />
     <Compile Include="Infrastructure\Helpers\ReplicationSectionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

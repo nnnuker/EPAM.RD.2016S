@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using UserStorage.Factory.Domains;
 using UserStorage.Factory.Infrastructure.CustomConfigSections;
@@ -11,16 +12,15 @@ using UserStorage.Services;
 
 namespace UserStorage.Factory
 {
-    public class UserStorageFactory
+    public static class UserStorageFactory
     {
         private static readonly IMaster masterStorage = GetMasterStorage();
 
         private static int count;
+
         private static readonly IEnumerable<StorageElement> slaveElements = ReplicationSectionHelper.GetSlaveSections();
 
         static UserStorageFactory() { }
-
-        private UserStorageFactory() { }
 
         public static IUserStorage GetMaster => masterStorage;
 
@@ -41,16 +41,16 @@ namespace UserStorage.Factory
 
         private static IMaster GetMasterStorage()
         {
-            var section = ReplicationSectionHelper.GetMasterSection();
-
-            AppDomain domain = AppDomain.CreateDomain(section.DomainName);
+            var masterElement = ReplicationSectionHelper.GetMasterSection();
+            AppDomain domain = AppDomain.CreateDomain(masterElement.DomainName);
 
             var loader = (DomainAssemblyLoader)domain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName,
                 typeof(DomainAssemblyLoader).FullName);
 
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserStorage.dll");
-            return loader.MasterLoadFrom(path, section.Repository.RepositoryType, section.Repository.Path, section.Validator.ValidatorType, 
-                section.Generator.GeneratorType);
+
+            return loader.MasterLoadFrom(path, masterElement.Repository.RepositoryType, masterElement.Repository.Path, 
+                masterElement.Validator.ValidatorType, masterElement.Generator.GeneratorType, masterElement.MessageSender.MessageSenderType);
         }
 
         private static ISlave GetSlaveStorage(int number)
@@ -62,7 +62,21 @@ namespace UserStorage.Factory
                 typeof(DomainAssemblyLoader).FullName);
 
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserStorage.dll");
-            return loader.SlaveLoadFrom(path, masterStorage);
+
+            if (configElement.TcpInfo.Address != string.Empty)
+            {
+                return GetSlaveTcp(loader, path, configElement);
+            }
+
+            return loader.SlaveLoadFrom(path, masterStorage, configElement.Repository.RepositoryType);
+        }
+
+        private static ISlave GetSlaveTcp(DomainAssemblyLoader loader, string path, StorageElement section)
+        {
+            IPEndPoint slaveEndPoint = new IPEndPoint(IPAddress.Parse(section.TcpInfo.Address), section.TcpInfo.Port);
+            
+
+            return loader.SlaveLoadFrom(path, masterStorage, section.Repository.RepositoryType, slaveEndPoint);
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UserStorage.Entities;
 using UserStorage.Factory;
 using UserStorage.Infrastructure;
+using UserStorage.Replication;
+using UserStorage.Replication.Events;
 using UserStorage.Services;
 using UserStorage.Storages;
 
@@ -18,15 +19,16 @@ namespace ConsoleClient
         static void Main(string[] args)
         {
             //WitoutDomains();
-            Domains();
-            //Threads();
+            //Domains();
+            Threads();
 
             //Console.WriteLine(typeof(XmlUserRepository).Name);
         }
 
         private static void WitoutDomains()
         {
-            var master = new Storage(new XmlUserRepository(@"d:\Projects\EPAM.RD.2016S.Larkovich\Day1\UserStorage\bin\Debug\UserDataBase.xml"), new ValidatorUsers(), new GeneratorIds());
+            var master = new Storage(new XmlUserRepository(@"d:\Projects\EPAM.RD.2016S.Larkovich\Day1\UserStorage\bin\Debug\UserDataBase.xml"), 
+                new ValidatorUsers(), new GeneratorIds(), new MessageSender());
             var slave = new SlaveStorage(new MemoryUserRepository(), master);
 
             var id = master.Add(new User
@@ -91,8 +93,8 @@ namespace ConsoleClient
 
         private static void Threads()
         {
-            var master = UserStorageFactory.GetMaster;
-            var slave = UserStorageFactory.GetSlave;
+            IUserStorage master = UserStorageFactory.GetMaster;
+            IUserStorage slave = UserStorageFactory.GetSlave;
 
             var mres = new ManualResetEventSlim();
 
@@ -136,10 +138,9 @@ namespace ConsoleClient
 
             foreach (var thread in threads)
             {
-                // TODO: Start all threads.
                 thread.Start();
             }
-            
+
             Console.WriteLine("Press any key to run unblock working threads.");
             Console.ReadKey();
 

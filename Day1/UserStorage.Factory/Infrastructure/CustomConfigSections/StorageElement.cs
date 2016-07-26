@@ -45,5 +45,19 @@ namespace UserStorage.Factory.Infrastructure.CustomConfigSections
             get { return (GeneratorElement)base["Generator"]; }
             set { base["Generator"] = value; }
         }
+
+        [ConfigurationProperty("MessageSender", IsKey = false, IsRequired = false)]
+        public MessageSenderElement MessageSender
+        {
+            get { return (MessageSenderElement)base["MessageSender"]; }
+            set { base["MessageSender"] = value; }
+        }
+
+        [ConfigurationProperty("TcpInfo", IsKey = false, IsRequired = false)]
+        public TcpInfoElement TcpInfo
+        {
+            get { return (TcpInfoElement)base["TcpInfo"]; }
+            set { base["TcpInfo"] = value; }
+        }
     }
 }
