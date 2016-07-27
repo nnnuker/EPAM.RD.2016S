@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using UserStorage.Entities;
-using UserStorage.Infrastructure;
 using UserStorage.Replication;
-using UserStorage.Storages;
 
 namespace UserStorage.Factory.Domains
 {
@@ -29,7 +25,7 @@ namespace UserStorage.Factory.Domains
             return instance as IMaster;
         }
 
-        public ISlave SlaveLoadFrom(string fileName, IMaster master, string repositoryType)
+        public ISlave SlaveLoadFrom(string fileName, string repositoryType)
         {
             var assembly = Assembly.LoadFrom(fileName);
 
@@ -38,12 +34,12 @@ namespace UserStorage.Factory.Domains
 
             var repository = Activator.CreateInstance(types.FirstOrDefault(t => t.Name == repositoryType));
 
-            var instance = Activator.CreateInstance(instanceType, repository, master);
+            var instance = Activator.CreateInstance(instanceType, repository);
             return instance as ISlave;
 
         }
 
-        public ISlave SlaveLoadFrom(string fileName, IMaster master, string repositoryType, IPEndPoint clientEndPoint)
+        public ISlave SlaveLoadFrom(string fileName, string repositoryType, IPEndPoint clientEndPoint)
         {
             var assembly = Assembly.LoadFrom(fileName);
 
@@ -52,7 +48,7 @@ namespace UserStorage.Factory.Domains
 
             var repository = Activator.CreateInstance(types.FirstOrDefault(t => t.Name == repositoryType));
 
-            var instance = Activator.CreateInstance(instanceType, repository, master, clientEndPoint);
+            var instance = Activator.CreateInstance(instanceType, repository, clientEndPoint);
             return instance as ISlave;
 
         }

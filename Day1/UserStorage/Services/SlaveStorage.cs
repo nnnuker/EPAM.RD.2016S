@@ -47,7 +47,7 @@ namespace UserStorage.Services
             lockSlim = new ReaderWriterLockSlim();
         }
 
-        public SlaveStorage(IRepository<User> repository, IMaster master, IPEndPoint clientEndPoint)
+        public SlaveStorage(IRepository<User> repository, IPEndPoint clientEndPoint)
         {
             if (repository == null)
             {

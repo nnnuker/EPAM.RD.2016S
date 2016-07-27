@@ -14,15 +14,19 @@ namespace UserStorage.Factory
 {
     public static class UserStorageFactory
     {
-        private static readonly IMaster masterStorage = GetMasterStorage();
-
         private static int count;
 
         private static readonly IEnumerable<StorageElement> slaveElements = ReplicationSectionHelper.GetSlaveSections();
 
         static UserStorageFactory() { }
 
-        public static IUserStorage GetMaster => masterStorage;
+        public static IUserStorage GetMaster
+        {
+            get
+            {
+                return GetMasterStorage();
+            }
+        }
 
         public static IUserStorage GetSlave
         {
