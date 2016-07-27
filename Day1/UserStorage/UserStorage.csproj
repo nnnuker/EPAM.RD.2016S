@@ -72,7 +72,6 @@
     <Compile Include="Replication\Events\MessageSenderTcp.cs" />
     <Compile Include="Replication\IMaster.cs" />
     <Compile Include="Replication\ISlave.cs" />
-    <Compile Include="Replication\ITcpListener.cs" />
     <Compile Include="Services\IStorage.cs" />
     <Compile Include="Services\IUserStorage.cs" />
     <Compile Include="Services\SlaveStorage.cs" />

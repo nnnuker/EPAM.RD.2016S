@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Threading.Tasks;
 using NLog;
 using UserStorage.Entities;
 using UserStorage.Replication;
@@ -24,28 +22,6 @@ namespace UserStorage.Services
 
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public static BooleanSwitch BooleanSwitch { get; set; } = new BooleanSwitch("switch", "Logger switcher");
-
-        public IPEndPoint ClientEndPoint => clientEndPoint;
-
-        public SlaveStorage(IRepository<User> repository, IMaster master)
-        {
-            if (repository == null)
-            {
-                var exception = new ArgumentNullException(nameof(repository) + " is null ref object.");
-                if (BooleanSwitch.Enabled)
-                {
-                    logger.Error(exception.Message);
-                }
-                throw exception;
-            }
-
-            this.repository = repository;
-
-            master.SubscribeToAddUser(this);
-            master.SubscribeToDeleteUser(this);
-
-            lockSlim = new ReaderWriterLockSlim();
-        }
 
         public SlaveStorage(IRepository<User> repository, IPEndPoint clientEndPoint)
         {
@@ -65,9 +41,6 @@ namespace UserStorage.Services
             lockSlim = new ReaderWriterLockSlim();
 
             ListenForNotify();
-
-            master.SubscribeToAddUser(this);
-            master.SubscribeToDeleteUser(this);
         }
 
         public int Add(User user)

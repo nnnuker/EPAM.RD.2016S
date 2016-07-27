@@ -285,8 +285,6 @@ namespace UserStorage.Services
                 throw new ArgumentNullException(nameof(e));
 
             messageSender.SendMessage(usersNotifyOnAdd, e);
-
-            //IPEndPoint ip = new IPEndPoint(new IPAddress(545456), 5555);
         }
 
         private void OnDeleteUser(Message e)

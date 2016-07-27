@@ -5,7 +5,7 @@ using UserStorage.Services;
 
 namespace UserStorage.Replication
 {
-    public interface ISlave : IUserStorage, ITcpListener
+    public interface ISlave : IUserStorage
     {
         void OnNotifyUser(Message message);
     }

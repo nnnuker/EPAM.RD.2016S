@@ -29,7 +29,7 @@ namespace ConsoleClient
         {
             var master = new Storage(new XmlUserRepository(@"d:\Projects\EPAM.RD.2016S.Larkovich\Day1\UserStorage\bin\Debug\UserDataBase.xml"), 
                 new ValidatorUsers(), new GeneratorIds(), new MessageSender());
-            var slave = new SlaveStorage(new MemoryUserRepository(), master);
+            var slave = new SlaveStorage(new MemoryUserRepository());
 
             var id = master.Add(new User
             {
